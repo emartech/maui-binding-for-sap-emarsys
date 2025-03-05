@@ -1,11 +1,11 @@
-[![REUSE status](https://api.reuse.software/badge/github.com/emartech/maui-emarsys-binding)](https://api.reuse.software/info/github.com/emartech/maui-emarsys-binding)
+[![REUSE status](https://api.reuse.software/badge/github.com/emartech/maui-binding-for-sap-emarsys)](https://api.reuse.software/info/github.com/emartech/maui-binding-for-sap-emarsys)
 
 ## MAUI Binding for SAP Emarsys
 > __`Note`__
 >
 > The currently supported platforms are iOS and Android.
 > 
-> For further informations about how to use the MAUI Binding please visit our [Documentation](https://github.com/emartech/maui-emarsys-binding/wiki)
+> For further informations about how to use the MAUI Binding please visit our [Documentation](https://github.com/emartech/maui-binding-for-sap-emarsys/wiki)
 
 The MAUI Binding for SAP Emarsys is the official binding to help integrate Emarsys into your MAUI application. 
 On this page we won't go into details about how the underlying Emarsys SDK works and how the supported features can be used.
