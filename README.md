@@ -3,7 +3,7 @@
 ## MAUI Binding for SAP Emarsys
 
 > __`Important!`__
-> This feature is currently available in a Pilot release for a select group of clients. If you wish to participate in the Pilot phase, please reach out to your Client Success Manager.
+> This product is currently available in a Pilot release for a select group of clients. If you wish to participate in the Pilot phase, please reach out to your Client Success Manager.
 >
 > Implementation should only begin after receiving confirmation of your pilot status from SAP Emarsys.
 
