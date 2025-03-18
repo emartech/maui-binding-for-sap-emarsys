@@ -91,7 +91,7 @@ public class TestPredict
 			linkUrl: new Uri("https://testLinkUrl.com"),
 			feature: "testFeature",
 			cohort: "testCohort",
-			customFields: new Dictionary<string, string> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
+			customFields: new Dictionary<string, object> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
 		) };
 		_platformMock.Setup(mock => mock.RecommendProducts(It.IsAny<Logic>(), It.IsAny<IList<Filter>?>(), It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<Action<IList<Product>?, string?>>()))
 			.Callback((Logic _, IList<Filter>? _, int? _, string? _, Action<IList<Product>?, string?> onCompleted) => onCompleted(resultProducts, null));
@@ -115,7 +115,7 @@ public class TestPredict
 			linkUrl: new Uri("https://testLinkUrl.com"),
 			feature: "testFeature",
 			cohort: "testCohort",
-			customFields: new Dictionary<string, string> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
+			customFields: new Dictionary<string, object> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
 		) };
 		_platformMock.Setup(mock => mock.RecommendProducts(It.IsAny<Logic>(), It.IsAny<IList<Filter>?>(), It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<Action<IList<Product>?, string?>>()))
 			.Callback((Logic _, IList<Filter>? _, int? _, string? _, Action<IList<Product>?, string?> onCompleted) => onCompleted(resultProducts, null));
@@ -155,7 +155,7 @@ public class TestPredict
 			linkUrl: new Uri("https://testLinkUrl.com"),
 			feature: "testFeature",
 			cohort: "testCohort",
-			customFields: new Dictionary<string, string> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
+			customFields: new Dictionary<string, object> { { "testCustomFieldsKey", "testCustomFieldsValue" } }
 		);
 		_internal.TrackRecommendationClick(product);
 
