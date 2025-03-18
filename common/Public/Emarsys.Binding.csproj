@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsTrimmable>true</IsTrimmable>
-    <PackageVersion>0.0.1</PackageVersion>
   </PropertyGroup>
 
   <!-- Reference to Binding Internal project -->
