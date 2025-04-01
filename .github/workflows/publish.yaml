@@ -1,0 +1,55 @@
+name: Publish MAUI Binding Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Import iOS Certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          source-url: https://nuget.pkg.github.com/emartech/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Install .NET MAUI
+        run: dotnet workload install maui
+
+      - name: Install Objective-Sharpie and Xamarin.iOS
+        run: |
+          curl -o objectivesharpie.pkg https://download.visualstudio.microsoft.com/download/pr/3a748cc2-780d-403c-88ba-700aa9a2d299/88cbfd86e85f56b4c61e092d0f0b9ad9/objectivesharpie-3.5.116.pkg
+          sudo installer -pkg objectivesharpie.pkg -target /
+          curl -o xamarin.ios.pkg https://download.visualstudio.microsoft.com/download/pr/ceb0ea3f-4db8-46b4-8dc3-8049d27c0107/3960868aa9b1946a6c77668c3f3334ee/xamarin.ios-16.4.0.23.pkg
+          sudo installer -pkg xamarin.ios.pkg -target /  
+
+      - name: Restore dependencies
+        run: dotnet restore common/Public/
+
+      - name: Build NuGet package
+        run: dotnet build common/Public/
+
+      - name: Pack NuGet package
+        run: dotnet pack common/Public/ -p:NuspecFile=Emarsys.Binding.nuspec
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push common/Public/bin/Release/Maui.Binding.SAP.Emarsys.*.nupkg
