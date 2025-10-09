@@ -423,7 +423,7 @@
 			repositoryURL = "https://github.com/emartech/ios-emarsys-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.7.2;
+				minimumVersion = 3.9.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

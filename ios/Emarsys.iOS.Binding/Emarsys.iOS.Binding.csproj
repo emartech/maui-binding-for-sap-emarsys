@@ -22,7 +22,11 @@
     <NLIXcodeProjectReference Include="../native/MauiEmarsys.xcodeproj">
       <SchemeName>MauiEmarsys</SchemeName>
       <SharpieNamespace>EmarsysiOS</SharpieNamespace>
+      <!-- Disable Sharpie for now.
+      It doesn't work with the latest iOS SDK. https://github.com/dotnet/macios/issues/22622
+      It is not required as ApiDefinition.cs has already been created.
       <SharpieBind>true</SharpieBind>
+      -->
       <!-- Metadata applicable to @(NativeReference) will be used if set, otherwise the following defaults will be used:
       <Kind>Framework</Kind>
       <SmartLink>true</SmartLink>

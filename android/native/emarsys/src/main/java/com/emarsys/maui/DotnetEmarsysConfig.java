@@ -30,7 +30,7 @@ public class DotnetEmarsysConfig {
     }
 
     public static @NonNull String getClientId() {
-        return Emarsys.getConfig().getHardwareId();
+        return Emarsys.getConfig().getClientId();
     }
 
     public static @NonNull String getLanguageCode() {

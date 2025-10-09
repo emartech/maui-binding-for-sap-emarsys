@@ -50,7 +50,7 @@ public class DotnetEmarsysConfig: NSObject {
     
     @objc
     public static func getClientId() -> String {
-        return Emarsys.config.hardwareId()
+        return Emarsys.config.clientId()
     }
     
     @objc

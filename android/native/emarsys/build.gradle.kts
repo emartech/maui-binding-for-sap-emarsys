@@ -31,16 +31,13 @@ configurations {
 }
 
 dependencies {
-    implementation("com.emarsys:emarsys-sdk:3.7.11")
-    implementation("com.emarsys:emarsys-firebase:3.7.11")
     // Add package dependency for binding library
-    // Uncomment line below and replace {dependency.name.goes.here} with your dependency
-    // implementation("{dependency.name.goes.here}")
+    implementation("com.emarsys:emarsys-sdk:3.10.2")
+    implementation("com.emarsys:emarsys-firebase:3.10.2")
 
     // Copy dependencies for binding library
-    // Uncomment line below and replace {dependency.name.goes.here} with your dependency
-    "copyDependencies"("com.emarsys:emarsys-sdk:3.7.11")
-    "copyDependencies"("com.emarsys:emarsys-firebase:3.7.11")
+    "copyDependencies"("com.emarsys:emarsys-sdk:3.10.2")
+    "copyDependencies"("com.emarsys:emarsys-firebase:3.10.2")
 }
 
 // Copy dependencies for binding library
