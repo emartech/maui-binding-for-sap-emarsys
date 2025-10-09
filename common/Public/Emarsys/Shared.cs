@@ -12,7 +12,8 @@ public partial class Emarsys
 		TrackCustomEvent("wrapper:init", new Dictionary<string, string>
 		{
 			{ "type", "maui" },
-			{ "version", Global.packageVersion }
+			{ "version", Global.packageVersion },
+			{ "frameworkVersion" , Global.frameworkVersion }
 		});
 	}
 
