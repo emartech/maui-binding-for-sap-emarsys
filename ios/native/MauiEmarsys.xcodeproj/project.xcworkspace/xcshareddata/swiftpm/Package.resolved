@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/emartech/ios-emarsys-sdk.git",
       "state" : {
-        "revision" : "d8499d89e6ab4e34beec4fe5064e85e4626d8006",
-        "version" : "3.7.2"
+        "revision" : "4808149e6ea0e0be3f6d01e0022b06c8c759c280",
+        "version" : "3.9.0"
       }
     }
   ],
