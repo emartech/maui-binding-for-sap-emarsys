@@ -10,9 +10,41 @@ global using OnCompletedAction = System.Action<System.Exception?>;
 global using ErrorType = System.Exception;
 #endif
 global using EmarsysBinding.Internal;
+global using System.Reflection;
+global using System.Runtime.Versioning;
 
-public static class Global {
+public static class Global
+{
+    public static string packageVersion = "0.0.1";
+    public static string frameworkVersion = GetFrameworkVersion();
 
-	public static string packageVersion = "0.0.1";
+    private static string GetFrameworkVersion()
+    {
+        try
+        {
+            var mauiAssembly = typeof(Microsoft.Maui.Hosting.MauiApp).Assembly;
 
+            var fullVersion =
+                mauiAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ??
+                mauiAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ??
+                mauiAssembly.GetName().Version?.ToString();
+
+            if (fullVersion is null)
+                return "unknown";
+
+            // Strip commit hash suffix (anything after '+')
+            var cleanVersion = fullVersion.Split('+')[0];
+
+            return cleanVersion;
+        }
+        catch
+        {
+            var tfa = Assembly.GetExecutingAssembly()
+                .GetCustomAttributes(typeof(TargetFrameworkAttribute), false)
+                .OfType<TargetFrameworkAttribute>()
+                .SingleOrDefault();
+
+            return tfa?.FrameworkDisplayName ?? "unknown";
+        }
+    }
 }
