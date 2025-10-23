@@ -286,13 +286,10 @@ generate_changelog_entry() {
     # Placeholder sections for manual additions
     entry="${entry}<!-- Uncomment and fill in the sections you need:\n\n"
     entry="${entry}## What's new\n"
-    entry="${entry}### [Feature Name](link-to-docs)\n"
     entry="${entry}* Description of new features\n\n"
     entry="${entry}## What's fixed\n"
-    entry="${entry}### [Feature Name](link-to-docs)\n"
     entry="${entry}* Description of bug fixes\n\n"
     entry="${entry}## What's changed\n"
-    entry="${entry}### [Feature Name](link-to-docs)\n"
     entry="${entry}* Description of changes or improvements\n\n"
     entry="${entry}-->\n\n"
     
@@ -862,11 +859,6 @@ if [ "$UPDATE_SUCCESS" = true ]; then
         COMMIT_MSG="$COMMIT_MSG
 
 - Package: $CURRENT_PACKAGE → $NEW_PACKAGE_VERSION"
-    fi
-    if [ "$UPDATE_CHANGELOG" = true ]; then
-        COMMIT_MSG="$COMMIT_MSG
-
-- Updated CHANGELOG.md"
     fi
     
     echo -e "${WHITE}Commit message will be:${NC}"
