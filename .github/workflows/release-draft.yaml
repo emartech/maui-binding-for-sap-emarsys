@@ -1,4 +1,6 @@
 name: Create Release Draft
+permissions:
+  contents: write
 
 on:
   push:
