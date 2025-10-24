@@ -26,6 +26,7 @@ ANDROID_GRADLE_PATH="$PROJECT_ROOT/android/native/emarsys/build.gradle.kts"
 ANDROID_BINDING_INTERNAL_PATH="$PROJECT_ROOT/common/Internal/Emarsys.Binding.Internal.csproj"
 IOS_PACKAGE_RESOLVED_PATH="$PROJECT_ROOT/ios/native/MauiEmarsys.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 IOS_PROJECT_PBXPROJ_PATH="$PROJECT_ROOT/ios/native/MauiEmarsys.xcodeproj/project.pbxproj"
+CHANGELOG_PATH="$PROJECT_ROOT/CHANGELOG.md"
 
 # Function to get current versions
 get_current_versions() {
@@ -224,6 +225,132 @@ prompt_for_package_version() {
     echo ""
 }
 
+# Function to get the latest released version from changelog
+get_latest_changelog_version() {
+    if [ -f "$CHANGELOG_PATH" ] && [ -s "$CHANGELOG_PATH" ]; then
+        # Look for version patterns in changelog (e.g., "# 1.0.0")
+        grep -E "^#\s+[0-9]+\.[0-9]+\.[0-9]+" "$CHANGELOG_PATH" | head -1 | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" || echo ""
+    else
+        echo ""
+    fi
+}
+
+# Function to check if changelog needs updating
+needs_changelog_update() {
+    local new_package_version="$1"
+    local current_package_version="$2"
+    local current_android="$3"
+    local new_android="$4"
+    local current_ios="$5"
+    local new_ios="$6"
+    
+    # Need update if package version changed OR any SDK version changed
+    if [ "$new_package_version" != "$current_package_version" ] || 
+       [ "$current_android" != "$new_android" ] || 
+       [ "$current_ios" != "$new_ios" ]; then
+        echo "true"
+    else
+        echo "false"
+    fi
+}
+
+# Function to generate changelog entry
+generate_changelog_entry() {
+    local new_package_version="$1"
+    local current_package="$2"
+    local current_android="$3"
+    local new_android="$4"
+    local current_ios="$5"
+    local new_ios="$6"
+    
+    local entry=""
+    
+    # Version header
+    entry="# $new_package_version\n"
+    
+    # SDK Updates section (if any)
+    if [ "$current_android" != "$new_android" ] || [ "$current_ios" != "$new_ios" ]; then
+        entry="${entry}## What's changed\n"
+        
+        if [ "$current_android" != "$new_android" ]; then
+            entry="${entry}* Updated underlying [Android Emarsys SDK](https://github.com/emartech/android-emarsys-sdk/releases/tag/$new_android) to $new_android\n"
+        fi
+        
+        if [ "$current_ios" != "$new_ios" ]; then
+            entry="${entry}* Updated underlying [iOS Emarsys SDK](https://github.com/emartech/ios-emarsys-sdk/releases/tag/$new_ios) to $new_ios\n"
+        fi
+        
+        entry="${entry}\n"
+    fi
+    
+    # Placeholder sections for manual additions
+    entry="${entry}<!-- Uncomment and fill in the sections you need:\n\n"
+    entry="${entry}## What's new\n"
+    entry="${entry}* Description of new features\n\n"
+    entry="${entry}## What's fixed\n"
+    entry="${entry}* Description of bug fixes\n\n"
+    entry="${entry}## What's changed\n"
+    entry="${entry}* Description of changes or improvements\n\n"
+    entry="${entry}-->\n\n"
+    
+    echo -e "$entry"
+}
+
+# Function to update changelog
+update_changelog() {
+    local new_package_version="$1"
+    local current_package="$2"
+    local current_android="$3"
+    local new_android="$4"
+    local current_ios="$5"
+    local new_ios="$6"
+    
+    local changelog_entry=$(generate_changelog_entry "$new_package_version" "$current_package" "$current_android" "$new_android" "$current_ios" "$new_ios")
+    
+    # Always replace the entire changelog with just the new entry
+    # This removes all previous versions and keeps only the current one
+    echo -e "$changelog_entry" > "$CHANGELOG_PATH"
+}
+
+# Function to prompt for changelog update
+prompt_for_changelog_update() {
+    local new_package_version="$1"
+    local current_package="$2"
+    local current_android="$3"
+    local new_android="$4"
+    local current_ios="$5"
+    local new_ios="$6"
+    
+    echo -e "${BLUE}${BOLD}📝 CHANGELOG.md Update${NC}"
+    echo -e "${WHITE}A new package version requires updating the changelog.${NC}"
+    echo ""
+    
+    # Show preview of what will be added
+    echo -e "${WHITE}Preview of changelog entry:${NC}"
+    echo -e "${CYAN}----------------------------------------${NC}"
+    generate_changelog_entry "$new_package_version" "$current_package" "$current_android" "$new_android" "$current_ios" "$new_ios"
+    echo -e "${CYAN}----------------------------------------${NC}"
+    echo ""
+    
+    echo -e "${WHITE}This entry includes SDK updates and package version change.${NC}"
+    echo -e "${WHITE}After the update, you can manually add any additional changes.${NC}"
+    echo ""
+    
+    while true; do
+        read -p $'\033[1;32m? Update CHANGELOG.md with this entry? (Y/n): \033[0m' changelog_update
+        changelog_update=${changelog_update:-y}  # Default to yes
+        
+        if [[ "$changelog_update" =~ ^[Yy]$ ]]; then
+            return 0  # Yes, update changelog
+        elif [[ "$changelog_update" =~ ^[Nn]$ ]]; then
+            echo -e "${YELLOW}   → Skipping changelog update${NC}"
+            return 1  # No, skip changelog update
+        else
+            echo -e "${RED}   ✗ Please answer 'y' for yes or 'n' for no${NC}"
+        fi
+    done
+}
+
 # Function to check git status
 check_git_status() {
     echo -e "${CYAN}🔍 Checking git status...${NC}"
@@ -372,6 +499,114 @@ fi
 # Step N: Package Version (always ask)
 echo -e "${BLUE}${BOLD}📦 Step $STEP_COUNT: Package Version${NC}"
 prompt_for_package_version "$CURRENT_PACKAGE" "NEW_PACKAGE_VERSION"
+STEP_COUNT=$((STEP_COUNT + 1))
+
+# Step N+1: CHANGELOG.md Update (if package version changed OR SDK versions changed)
+CHANGELOG_UPDATE_NEEDED=$(needs_changelog_update "$NEW_PACKAGE_VERSION" "$CURRENT_PACKAGE" "$CURRENT_ANDROID" "$NEW_ANDROID_VERSION" "$CURRENT_IOS" "$NEW_IOS_VERSION")
+UPDATE_CHANGELOG=false
+
+if [ "$CHANGELOG_UPDATE_NEEDED" = "true" ]; then
+    echo -e "${BLUE}${BOLD}📝 Step $STEP_COUNT: CHANGELOG.md Update${NC}"
+    
+    # Create backup of current changelog for potential rollback
+    CHANGELOG_BACKUP=""
+    if [ -f "$CHANGELOG_PATH" ]; then
+        CHANGELOG_BACKUP=$(cat "$CHANGELOG_PATH")
+        CHANGELOG_HASH_BEFORE=$(shasum -a 256 "$CHANGELOG_PATH" | cut -d' ' -f1)
+    fi
+    
+    # First, auto-update the changelog with SDK updates
+    echo -e "${WHITE}Updating CHANGELOG.md with SDK and version changes...${NC}"
+    if update_changelog "$NEW_PACKAGE_VERSION" "$CURRENT_PACKAGE" "$CURRENT_ANDROID" "$NEW_ANDROID_VERSION" "$CURRENT_IOS" "$NEW_IOS_VERSION"; then
+        echo -e "${GREEN}✓ CHANGELOG.md updated with automatic entries${NC}"
+        UPDATE_CHANGELOG=true
+    else
+        echo -e "${RED}✗ Failed to update CHANGELOG.md${NC}"
+        exit 1
+    fi
+    
+    echo ""
+    echo -e "${YELLOW}${BOLD}📝 IMPORTANT: Manual Changelog Review Required${NC}"
+    echo -e "${WHITE}The CHANGELOG.md has been updated with SDK updates and/or version changes.${NC}"
+    echo -e "${WHITE}You MUST now complete the changelog by:${NC}"
+    echo -e "${CYAN}   1. REMOVING the template comment block (<!-- Uncomment and fill... -->)${NC}"
+    echo -e "${CYAN}   2. Adding actual sections for your changes:${NC}"
+    echo -e "${CYAN}      • ## What's new (for new features)${NC}"
+    echo -e "${CYAN}      • ## What's fixed (for bug fixes)${NC}"
+    echo -e "${CYAN}      • ## What's changed (for breaking changes, improvements)${NC}"
+    echo -e "${CYAN}   3. Filling in real content with actual changes made${NC}"
+    echo ""
+    echo -e "${WHITE}The script will verify that template comments are removed and will only proceed${NC}"
+    echo -e "${WHITE}if you complete the changelog with actual content.${NC}"
+    echo ""
+    
+    # Open changelog for editing
+    if command -v code >/dev/null 2>&1; then
+        echo -e "${CYAN}Opening CHANGELOG.md in VS Code...${NC}"
+        code "$CHANGELOG_PATH"
+    elif command -v open >/dev/null 2>&1; then
+        echo -e "${CYAN}Opening CHANGELOG.md with default editor...${NC}"
+        open "$CHANGELOG_PATH"
+    else
+        echo -e "${YELLOW}Please edit: $CHANGELOG_PATH${NC}"
+    fi
+    
+    echo ""
+    echo -e "${WHITE}Press any key when you have finished editing the changelog...${NC}"
+    read -n 1 -s
+    echo ""
+    
+    # Check if changelog was actually modified and template comments removed
+    CHANGELOG_HASH_AFTER=""
+    if [ -f "$CHANGELOG_PATH" ]; then
+        CHANGELOG_HASH_AFTER=$(shasum -a 256 "$CHANGELOG_PATH" | cut -d' ' -f1)
+    fi
+    
+    # Check if template comments are still present
+    if grep -q "<!-- Uncomment and fill in the sections you need:" "$CHANGELOG_PATH" 2>/dev/null; then
+        echo -e "${RED}❌ Template comments still present in CHANGELOG.md${NC}"
+        echo -e "${WHITE}You must remove the template comments and add actual changelog content.${NC}"
+        echo -e "${WHITE}Please:${NC}"
+        echo -e "${CYAN}   1. Remove the <!-- Uncomment and fill... --> comment block${NC}"
+        echo -e "${CYAN}   2. Add actual sections for your changes (What's new, What's fixed, etc.)${NC}"
+        echo -e "${CYAN}   3. Fill in real content instead of template placeholders${NC}"
+        echo ""
+        
+        # Restore original changelog
+        echo -e "${YELLOW}🔄 Restoring original CHANGELOG.md and discarding all changes...${NC}"
+        if [ -n "$CHANGELOG_BACKUP" ]; then
+            echo "$CHANGELOG_BACKUP" > "$CHANGELOG_PATH"
+            echo -e "${GREEN}✓ CHANGELOG.md restored to original state${NC}"
+            echo -e "${WHITE}   All automatic changes have been discarded${NC}"
+        fi
+        
+        echo ""
+        echo -e "${YELLOW}Update cancelled. No files have been modified.${NC}"
+        echo -e "${WHITE}Please complete the changelog properly and run the script again.${NC}"
+        exit 1
+    elif [ "$CHANGELOG_HASH_BEFORE" = "$CHANGELOG_HASH_AFTER" ]; then
+        echo -e "${RED}❌ No changes detected in CHANGELOG.md${NC}"
+        echo -e "${WHITE}You must update the changelog with your changes before proceeding.${NC}"
+        echo -e "${WHITE}Please add details about bug fixes, features, or other changes.${NC}"
+        echo ""
+        
+        # Restore original changelog
+        echo -e "${YELLOW}🔄 Restoring original CHANGELOG.md and discarding all changes...${NC}"
+        if [ -n "$CHANGELOG_BACKUP" ]; then
+            echo "$CHANGELOG_BACKUP" > "$CHANGELOG_PATH"
+            echo -e "${GREEN}✓ CHANGELOG.md restored to original state${NC}"
+            echo -e "${WHITE}   All automatic changes have been discarded${NC}"
+        fi
+        
+        echo ""
+        echo -e "${YELLOW}Update cancelled. No files have been modified.${NC}"
+        echo -e "${WHITE}Please run the script again after considering what changes to document.${NC}"
+        exit 1
+    else
+        echo -e "${GREEN}✓ Changelog properly completed - proceeding with update${NC}"
+    fi
+    echo ""
+fi
 
 # Summary of changes
 echo -e "${CYAN}${BOLD}📋 Summary of Changes:${NC}"
@@ -381,6 +616,9 @@ if [ "$CURRENT_IOS" != "$NEW_IOS_VERSION" ]; then
     echo -e "${WHITE}   iOS Rev:     ${CYAN}${CURRENT_IOS_REVISION:0:8}...${NC} → ${GREEN}${NEW_IOS_REVISION:0:8}...${NC}"
 fi
 echo -e "${WHITE}   Package:     ${YELLOW}$CURRENT_PACKAGE${NC} → ${GREEN}$NEW_PACKAGE_VERSION${NC}"
+if [ "$UPDATE_CHANGELOG" = true ]; then
+    echo -e "${WHITE}   Changelog:   ${GREEN}Updated and manually reviewed${NC}"
+fi
 echo ""
 
 # Check if any changes were made
@@ -388,6 +626,7 @@ CHANGES_MADE=false
 if [ "$CURRENT_PACKAGE" != "$NEW_PACKAGE_VERSION" ]; then CHANGES_MADE=true; fi
 if [ "$CURRENT_ANDROID" != "$NEW_ANDROID_VERSION" ]; then CHANGES_MADE=true; fi
 if [ "$CURRENT_IOS" != "$NEW_IOS_VERSION" ]; then CHANGES_MADE=true; fi
+if [ "$UPDATE_CHANGELOG" = true ]; then CHANGES_MADE=true; fi
 
 if [ "$CHANGES_MADE" = false ]; then
     echo -e "${YELLOW}ℹ️  No changes detected. All versions remain the same.${NC}"
@@ -600,7 +839,12 @@ if [ "$UPDATE_SUCCESS" = true ]; then
     echo -e "${WHITE}Ready to commit these version updates?${NC}"
     
     # Generate commit message
-    COMMIT_MSG="chore: update versions"
+    if [ "$UPDATE_CHANGELOG" = true ]; then
+        COMMIT_MSG="chore: release version $NEW_PACKAGE_VERSION"
+    else
+        COMMIT_MSG="chore: update versions"
+    fi
+    
     if [ "$CURRENT_ANDROID" != "$NEW_ANDROID_VERSION" ]; then
         COMMIT_MSG="$COMMIT_MSG
 
