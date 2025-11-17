@@ -10,6 +10,9 @@
       To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/prepare-libraries-for-trimming
     -->
     <IsTrimmable>true</IsTrimmable>
+    
+    <!-- Not packable - embedded in main package -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,8 +37,18 @@
     </NLIXcodeProjectReference>
   </ItemGroup>
 
+  <!-- Include the native framework for NuGet packaging -->
+  <ItemGroup>
+    <NativeReference Include="../native/MauiEmarsysiOS.xcframework">
+      <Kind>Framework</Kind>
+      <SmartLink>true</SmartLink>
+    </NativeReference>
+  </ItemGroup>
+
   <!-- Reference to NuGet for building bindings -->
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" />
+    <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks"
+      Version="0.0.1-pre1"
+      PrivateAssets="all"/>
   </ItemGroup>
 </Project>

@@ -14,6 +14,9 @@
       NOTE: you can simply add .aar or .jar files in this directory to be included in the project.
       To learn more, see: https://learn.microsoft.com/dotnet/maui/migration/android-binding-projects
     -->
+    
+    <!-- Not packable - embedded in main package -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <!-- Reference to Android project -->
@@ -29,7 +32,9 @@
 
   <!-- Reference to NuGet for building bindings -->
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" />
+    <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks"
+      Version="0.0.1-pre1"
+      PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

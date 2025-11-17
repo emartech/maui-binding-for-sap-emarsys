@@ -10,9 +10,10 @@ jobs:
       contents: read
       # id-token: write is required to release using the trusted publisher
       id-token: write
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     # The GitHub Actions Environment configured for the trusted publisher
     environment: nuget:Maui.Binding.SAP.Emarsys
+
     steps:
 
       - name: Checkout Repository

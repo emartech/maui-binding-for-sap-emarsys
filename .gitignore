@@ -370,3 +370,5 @@ Temporary Items
 /ios/Emarsys.iOS.Binding/bin
 /ios/Emarsys.iOS.Binding/bin
 /ios/native/Emarsys/obj
+/ios/native/MauiEmarsysiOS.xcframework
+/artifacts

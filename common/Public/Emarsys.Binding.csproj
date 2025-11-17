@@ -6,11 +6,24 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsTrimmable>true</IsTrimmable>
+    
+    <PackageId>Maui.Binding.SAP.Emarsys</PackageId>
+    <Version>0.1.1</Version>
+    <Authors>Emarsys</Authors>
+    <Description>MAUI Binding for SAP Emarsys.</Description>
+    <RepositoryUrl>https://github.com/emartech/maui-binding-for-sap-emarsys</RepositoryUrl>
+    <RepositoryBranch>main</RepositoryBranch>
+    <PackageTags>MAUI Emarsys SDK</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <!-- Reference to Binding Internal project -->
   <ItemGroup>
     <ProjectReference Include="..\Internal\Emarsys.Binding.Internal.csproj" />
+  </ItemGroup>
+
+  <!-- Include README for NuGet package -->
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('android'))">
@@ -18,5 +31,35 @@
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
     <Compile Remove="**\Android.cs" />
+  </ItemGroup>
+  
+  <!-- Package dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+  </ItemGroup>
+  
+  <!-- Android-specific dependencies -->
+  <ItemGroup Condition="$(TargetFramework.Contains('android'))">
+    <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.4" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx" Version="2.8.6" />
+    <PackageReference Include="Xamarin.Firebase.Messaging" Version="124.0.2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <IncludeReferencedProjects>true</IncludeReferencedProjects>
+  </PropertyGroup>
+
+  <!-- Exclude Swift module files that cause long path warnings - these are not needed at runtime -->
+  <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
+    <!-- Exclude the entire Modules directory from the xcframework as it's not needed for consumption -->
+    <None Remove="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" />
+    <Content Remove="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" />
+    
+    <!-- Explicitly exclude from package -->
+    <None Include="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\*" 
+          Exclude="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" 
+          Pack="true" 
+          PackagePath="lib/$(TargetFramework)/Emarsys.iOS.Binding.resources/MauiEmarsysiOS.xcframework/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>
