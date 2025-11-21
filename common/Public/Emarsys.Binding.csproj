@@ -11,19 +11,23 @@
     <Version>0.1.1</Version>
     <Authors>Emarsys</Authors>
     <Description>MAUI Binding for SAP Emarsys.</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/emartech/maui-binding-for-sap-emarsys</PackageProjectUrl>
     <RepositoryUrl>https://github.com/emartech/maui-binding-for-sap-emarsys</RepositoryUrl>
     <RepositoryBranch>main</RepositoryBranch>
     <PackageTags>MAUI Emarsys SDK</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageChangelogFile>CHANGELOG.md</PackageChangelogFile>
   </PropertyGroup>
 
+  <!-- Reference to Binding Internal project -->
   <ItemGroup>
     <ProjectReference Include="..\Internal\Emarsys.Binding.Internal.csproj" />
   </ItemGroup>
 
-  <!-- Include README for NuGet package -->
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('android'))">
@@ -55,8 +59,7 @@
     <!-- Exclude the entire Modules directory from the xcframework as it's not needed for consumption -->
     <None Remove="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" />
     <Content Remove="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" />
-    
-    <!-- Explicitly exclude from package -->
+
     <None Include="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\*" 
           Exclude="$(OutputPath)Emarsys.iOS.Binding.resources\MauiEmarsysiOS.xcframework\**\Modules\**" 
           Pack="true" 
