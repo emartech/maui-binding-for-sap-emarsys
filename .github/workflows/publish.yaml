@@ -52,51 +52,38 @@ jobs:
           sudo installer -pkg xamarin.ios.pkg -target /  
 
       - name: Build iOS Native Framework
-        run: |
-          cd ios/native
-
-          xcodebuild -project MauiEmarsys.xcodeproj -scheme MauiEmarsys -configuration Release -sdk iphoneos clean build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO BUILD_DIR=./build
-          xcodebuild -project MauiEmarsys.xcodeproj -scheme MauiEmarsys -configuration Release -sdk iphonesimulator clean build ARCHS="x86_64 arm64" ONLY_ACTIVE_ARCH=NO BUILD_DIR=./build
-
-          rm -rf MauiEmarsysiOS.xcframework
-          xcodebuild -create-xcframework \
-            -framework build/Release-iphoneos/MauiEmarsys.framework \
-            -framework build/Release-iphonesimulator/MauiEmarsys.framework \
-            -output MauiEmarsysiOS.xcframework
-
-          # find the binary inside the XCFramework
-          BINARY=$(find MauiEmarsysiOS.xcframework -name "MauiEmarsys" -type f)
-
-          # fail if not found
-          if [ -z "$BINARY" ]; then
-            echo "MauiEmarsys binary not found inside the XCFramework!"
-            exit 1
-          fi
-
-          file "$BINARY"
+        run: ./scripts/build-ios-framework.sh
 
       - name: Clean and Restore Dependencies
         run: | 
-          mkdir artifacts
+          mkdir -p artifacts
           dotnet clean common/Public && dotnet restore common/Public 
 
-      # - name: Run Unit Tests
-      #   run: |
-      #     dotnet restore test/
-      #     dotnet test test/ --configuration Release
+      - name: Build and Pack NuGet package
+        run: |
+          rm -f artifacts/*.nupkg || true
+          dotnet pack common/Public/ --configuration Release --output ./artifacts
+
+      - name: Setup Sample Apps Package References
+        run: ./scripts/setup-sample-package-refs.sh
+
+      - name: Run Unit Tests
+        run: |
+          dotnet restore test/
+          dotnet test test/ --configuration Release
 
       - name: Clean and Restore Sample App
         run: |
           dotnet clean sample && dotnet restore sample
 
-      - name: Build Android Sample App
+      - name: Build Android Sample App (from NuGet package)
         run: |
           cd sample
 
           echo '${{ secrets.GOOGLE_SERVICE_JSON }}' > google-services.json
           dotnet build -f net9.0-android --configuration Release
 
-      - name: Build iOS Sample App
+      - name: Build iOS Sample App (from NuGet package)
         run: |
           cd sample
           # Build for iOS without code signing
@@ -109,8 +96,5 @@ jobs:
             -p:_RequireCodeSigning=false \
             -p:MtouchUseLlvm=false
 
-      - name: Build and Pack NuGet package
-        run: dotnet pack common/Public/ --configuration Release --output ./artifacts
-
-      # - name: Publish to GitHub Packages
-      #   run: dotnet nuget push ./artifacts/*.nupkg --skip-duplicate
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push ./artifacts/*.nupkg --skip-duplicate

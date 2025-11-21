@@ -371,4 +371,11 @@ Temporary Items
 /ios/Emarsys.iOS.Binding/bin
 /ios/native/Emarsys/obj
 /ios/native/MauiEmarsysiOS.xcframework
-/artifacts
+
+# NuGet packages
+*.nupkg
+*.snupkg
+
+# Artifacts folder contents (but keep the folder structure)
+/artifacts/*
+!/artifacts/.gitkeep

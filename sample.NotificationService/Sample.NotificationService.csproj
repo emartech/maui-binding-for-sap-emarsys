@@ -26,5 +26,6 @@
 	<!-- Reference to Emarsys Binding project -->
 	<ItemGroup>
 		<ProjectReference Include="..\common\Public\Emarsys.Binding.csproj" />
+		<!-- <PackageReference Include="Maui.Binding.SAP.Emarsys" Version="0.1.2" /> -->
 	</ItemGroup>
 </Project>
