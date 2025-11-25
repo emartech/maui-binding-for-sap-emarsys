@@ -21,7 +21,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # File paths (relative to project root)
 GLOBAL_USING_PATH="$PROJECT_ROOT/common/Public/GlobalUsing.cs"
-NUSPEC_PATH="$PROJECT_ROOT/common/Public/Emarsys.Binding.nuspec"
+MAIN_CSPROJ_PATH="$PROJECT_ROOT/common/Public/Emarsys.Binding.csproj"
 ANDROID_GRADLE_PATH="$PROJECT_ROOT/android/native/emarsys/build.gradle.kts"
 ANDROID_BINDING_INTERNAL_PATH="$PROJECT_ROOT/common/Internal/Emarsys.Binding.Internal.csproj"
 IOS_PACKAGE_RESOLVED_PATH="$PROJECT_ROOT/ios/native/MauiEmarsys.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
@@ -35,8 +35,14 @@ get_current_versions() {
     # Get current package version
     if [ -f "$GLOBAL_USING_PATH" ]; then
         CURRENT_PACKAGE=$(grep -o 'packageVersion = "[^"]*"' "$GLOBAL_USING_PATH" | sed 's/packageVersion = "\(.*\)"/\1/')
-        echo -e "${WHITE}   Package: ${YELLOW}$CURRENT_PACKAGE${NC}"
     fi
+    
+    # Fallback to reading from main .csproj if GlobalUsing.cs doesn't have it
+    if [ -z "$CURRENT_PACKAGE" ] && [ -f "$MAIN_CSPROJ_PATH" ]; then
+        CURRENT_PACKAGE=$(grep -o '<Version>[^<]*</Version>' "$MAIN_CSPROJ_PATH" | sed 's/<Version>\(.*\)<\/Version>/\1/')
+    fi
+    
+    echo -e "${WHITE}   Package: ${YELLOW}$CURRENT_PACKAGE${NC}"
     
     # Get current Android SDK version
     if [ -f "$ANDROID_GRADLE_PATH" ]; then
@@ -659,10 +665,10 @@ if [ "$CURRENT_PACKAGE" != "$NEW_PACKAGE_VERSION" ]; then
     fi
 fi
 
-# Update Emarsys.Binding.nuspec - Package version
+# Update Emarsys.Binding.csproj - Package version
 if [ "$CURRENT_PACKAGE" != "$NEW_PACKAGE_VERSION" ]; then
-    echo -ne "${WHITE}   📝 Updating Emarsys.Binding.nuspec... ${NC}"
-    if sed -i "" "s/<version>[^<]*<\/version>/<version>$NEW_PACKAGE_VERSION<\/version>/" "$NUSPEC_PATH" 2>/dev/null; then
+    echo -ne "${WHITE}   📝 Updating Emarsys.Binding.csproj... ${NC}"
+    if sed -i "" "s/<Version>[^<]*<\/Version>/<Version>$NEW_PACKAGE_VERSION<\/Version>/" "$MAIN_CSPROJ_PATH" 2>/dev/null; then
         echo -e "${GREEN}✓${NC}"
     else
         echo -e "${RED}✗${NC}"
