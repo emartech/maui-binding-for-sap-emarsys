@@ -65,15 +65,19 @@ jobs:
         run: |
           # Add artifacts folder as a NuGet source
           dotnet nuget add source $PWD/artifacts --name LocalPackages
+          dotnet nuget list source
           
-          cd sample
           # Remove local project reference (if any) and add NuGet package reference
-          dotnet remove reference ../common/Public/Emarsys.Binding.csproj
-          dotnet add package Maui.Binding.SAP.Emarsys --version ${{ inputs.package-version }}
+          dotnet remove sample/Sample.csproj reference ../common/Public/Emarsys.Binding.csproj
+          dotnet remove sample.NotificationService/Sample.NotificationService.csproj reference ../common/Public/Emarsys.Binding.csproj
+
+          dotnet add sample/Sample.csproj package Maui.Binding.SAP.Emarsys --version ${{ inputs.package-version }}
+          dotnet add sample.NotificationService/Sample.NotificationService.csproj package Maui.Binding.SAP.Emarsys --version ${{ inputs.package-version }}
 
       - name: Clean and Restore Sample App
         run: |
           dotnet clean sample && dotnet restore sample
+          dotnet clean sample.NotificationService && dotnet restore sample.NotificationService
 
       - name: Build Android Sample App (from NuGet package)
         run: |

@@ -10,9 +10,6 @@
       To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/prepare-libraries-for-trimming
     -->
     <IsTrimmable>true</IsTrimmable>
-    
-    <!-- Not packable - embedded in main package -->
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,7 +45,6 @@
   <!-- Reference to NuGet for building bindings -->
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks"
-      Version="0.0.1-pre1"
-      PrivateAssets="all"/>
+      Version="0.0.1-pre1" />
   </ItemGroup>
 </Project>
