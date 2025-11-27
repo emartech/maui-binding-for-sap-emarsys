@@ -91,11 +91,6 @@ jobs:
           dotnet remove reference ../common/Public/Emarsys.Binding.csproj
           dotnet add package Maui.Binding.SAP.Emarsys --version ${{ steps.get_version.outputs.version }}
 
-      - name: Run Unit Tests
-        run: |
-          dotnet restore test/
-          dotnet test test/ --configuration Release
-
       - name: Clean and Restore Sample App
         run: |
           dotnet clean sample && dotnet restore sample

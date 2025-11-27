@@ -1,0 +1,51 @@
+name: Build iOS Native Framework
+
+on:
+  workflow_call:
+    outputs:
+      artifact-name:
+        description: "Name of the iOS framework artifact"
+        value: ios-framework
+  workflow_dispatch:
+
+jobs:
+  build-ios-native:
+    name: Build iOS Native Framework
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Import iOS Certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+
+      - name: Install Objective-Sharpie and Xamarin.iOS
+        run: |
+          curl -o objectivesharpie.pkg https://download.visualstudio.microsoft.com/download/pr/3a748cc2-780d-403c-88ba-700aa9a2d299/88cbfd86e85f56b4c61e092d0f0b9ad9/objectivesharpie-3.5.116.pkg
+          sudo installer -pkg objectivesharpie.pkg -target /
+          curl -o xamarin.ios.pkg https://download.visualstudio.microsoft.com/download/pr/ceb0ea3f-4db8-46b4-8dc3-8049d27c0107/3960868aa9b1946a6c77668c3f3334ee/xamarin.ios-16.4.0.23.pkg
+          sudo installer -pkg xamarin.ios.pkg -target /
+
+      - name: Build iOS Native Framework
+        run: |
+          cd ios/native
+
+          xcodebuild -project MauiEmarsys.xcodeproj -scheme MauiEmarsys -configuration Release -sdk iphoneos clean build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO BUILD_DIR=./build
+          xcodebuild -project MauiEmarsys.xcodeproj -scheme MauiEmarsys -configuration Release -sdk iphonesimulator clean build ARCHS="x86_64 arm64" ONLY_ACTIVE_ARCH=NO BUILD_DIR=./build
+
+          rm -rf MauiEmarsysiOS.xcframework
+          xcodebuild -create-xcframework \
+            -framework build/Release-iphoneos/MauiEmarsys.framework \
+            -framework build/Release-iphonesimulator/MauiEmarsys.framework \
+            -output MauiEmarsysiOS.xcframework
+
+      - name: Upload iOS Framework
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-framework
+          path: ios/native/MauiEmarsysiOS.xcframework/
+          retention-days: 1

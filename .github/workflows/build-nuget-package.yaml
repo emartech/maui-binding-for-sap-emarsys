@@ -1,0 +1,74 @@
+name: Build NuGet Package
+
+on:
+  workflow_call:
+    outputs:
+      version:
+        description: "Package version"
+        value: ${{ jobs.build-nuget-package.outputs.version }}
+      artifact-name:
+        description: "Name of the NuGet package artifact"
+        value: nuget-package
+  workflow_dispatch:
+
+jobs:
+  build-nuget-package:
+    name: Build and Pack NuGet Package
+    runs-on: macos-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download iOS Framework
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-framework
+          path: ios/native/MauiEmarsysiOS.xcframework
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install .NET MAUI
+        run: |
+          dotnet workload install maui
+
+          # Install compatible iOS workload version for Xcode 16.4
+          dotnet workload install ios --version 9.0.100
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Clean and Restore Dependencies
+        run: | 
+          mkdir -p artifacts
+          dotnet clean common/Public && dotnet restore common/Public 
+
+      - name: Build and Pack NuGet package
+        run: |
+          rm -f artifacts/*.nupkg || true
+          dotnet pack common/Public/ --configuration Release --output ./artifacts
+
+      - name: Extract Version from csproj
+        id: get_version
+        run: |
+          VERSION=$(grep -o '<Version>[^<]*</Version>' common/Public/Emarsys.Binding.csproj | sed 's/<Version>\(.*\)<\/Version>/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Upload NuGet Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts/*.nupkg
+          retention-days: 1

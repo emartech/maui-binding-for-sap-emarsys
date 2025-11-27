@@ -1,0 +1,29 @@
+name: Publish to NuGet
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  publish-nuget:
+    name: Publish to NuGet
+    runs-on: macos-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: nuget:Maui.Binding.SAP.Emarsys
+    
+    steps:
+      - name: Download NuGet Package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Push to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
