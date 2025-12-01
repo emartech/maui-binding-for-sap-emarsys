@@ -16,7 +16,7 @@
         <dependency id="Xamarin.AndroidX.Lifecycle.Runtime.Ktx" version="2.8.6" />
         <dependency id="Xamarin.Firebase.Messaging" version="124.0.2" />
       </group>
-      <group targetFramework="net9.0-ios14.0">
+      <group targetFramework="net9.0-ios15.0">
       </group>
     </dependencies>
   </metadata>
