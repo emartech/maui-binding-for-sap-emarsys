@@ -33,7 +33,7 @@ jobs:
           source-url: https://nuget.pkg.github.com/emartech/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
       - name: Install .NET MAUI
         run: |
           dotnet workload install maui
