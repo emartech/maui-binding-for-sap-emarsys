@@ -1,0 +1,14 @@
+name: Create Release Draft
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    if: ${{ (contains(github.event.pull_request.title, '[Release]') && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch' }}
+    name: Create Release Draft
+    uses: ./.github/workflows/create-release-draft.yaml
+    secrets: inherit

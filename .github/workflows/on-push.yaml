@@ -1,0 +1,9 @@
+name: Run Tests
+
+on: push
+
+jobs:
+  test:
+    name: Run Tests
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit
