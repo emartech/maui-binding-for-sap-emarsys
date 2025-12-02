@@ -1,0 +1,32 @@
+name: Publish Package to NuGet
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  publish-nuget:
+    name: Publish to NuGet
+    permissions:
+      contents: read
+      # id-token: write is required to release using the trusted publisher
+      id-token: write
+    runs-on: macos-latest
+    # The GitHub Actions Environment configured for the trusted publisher
+    environment: nuget:Maui.Binding.SAP.Emarsys
+
+    steps:
+
+      - name: Download NuGet Package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Push to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate

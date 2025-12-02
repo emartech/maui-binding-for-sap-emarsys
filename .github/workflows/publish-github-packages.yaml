@@ -1,0 +1,31 @@
+name: Publish Package to GitHub Packages
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  publish-github-packages:
+    name: Push to GitHub Packages
+    runs-on: macos-latest
+    permissions:
+      packages: write
+      contents: read
+    
+    steps:
+      - name: Download NuGet Package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+          source-url: https://nuget.pkg.github.com/emartech/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push ./artifacts/*.nupkg --skip-duplicate

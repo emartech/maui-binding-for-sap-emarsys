@@ -1,0 +1,43 @@
+name: Publish Package
+permissions:
+  contents: read
+  packages: write
+
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Integraion Tests
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit
+
+  build-nuget-package:
+    name: Build NuGet Package
+    needs: test
+    uses: ./.github/workflows/build-nuget-package.yaml
+    secrets: inherit
+
+  build-sample-apps:
+    name: Build Sample Apps
+    needs: build-nuget-package
+    uses: ./.github/workflows/build-sample-apps.yaml
+    secrets: inherit
+    with:
+      package-version: ${{ needs.build-nuget-package.outputs.version }}
+
+  publish-github-packages:
+    name: Publish to GitHub Packages
+    needs: [build-nuget-package, build-sample-apps]
+    uses: ./.github/workflows/publish-github-packages.yaml
+    secrets: inherit
+
+  # To enable NuGet publishing, uncomment the following lines
+  # publish-nuget:
+  #   name: Publish to NuGet
+  #   needs: [build-nuget-package, build-sample-apps]
+  #   uses: ./.github/workflows/publish-nuget.yaml
+  #   secrets: inherit

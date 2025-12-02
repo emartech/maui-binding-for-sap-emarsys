@@ -1,18 +1,11 @@
 name: Create Release Draft
-permissions:
-  contents: write
 
 on:
-  push:
-  pull_request:
-    types: [closed]
-    branches: [main]
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   create-release:
-    if: ${{ (contains(github.event.pull_request.title, '[Release]') && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
@@ -58,7 +51,7 @@ jobs:
           echo "Tag already exists, skipping creation"
         fi
 
-    - name: Create GitHub Release
+    - name: Create GitHub Release Draft
       if: steps.create-tag.outputs.tag-created == 'true'
       uses: actions/create-release@v1
       env:
