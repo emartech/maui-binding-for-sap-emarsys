@@ -17,8 +17,12 @@
 
 		<CodesignKey>Apple Development: (4J5FXBB97U)</CodesignKey>
 		<CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
-	</PropertyGroup>
-
+		
+		<!-- Workaround for AOT compilation issue https://github.com/dotnet/runtime/issues/109966 -->
+		<MtouchInterpreter>all</MtouchInterpreter>
+		<Registrar>managed-static</Registrar>
+	</PropertyGroup>	
+	
 	<ItemGroup>
 		<None Include="Info.plist" />
 	</ItemGroup>

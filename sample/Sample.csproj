@@ -24,9 +24,10 @@
 		
 		<!-- Android SDK settings -->
 		<AndroidSdkDirectory Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(AndroidSdkDirectory)' == ''">$(ANDROID_HOME)</AndroidSdkDirectory>
-
-		<CodesignKey>Apple Development: (4J5FXBB97U)</CodesignKey>
-		<CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
+		
+		<!-- Workaround for AOT compilation issue https://github.com/dotnet/runtime/issues/109966 -->
+		<MtouchInterpreter Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">-all</MtouchInterpreter>
+		<Registrar Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">managed-static</Registrar>
 	</PropertyGroup>
 
 	<ItemGroup>

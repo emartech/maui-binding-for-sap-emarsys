@@ -1,4 +1,4 @@
-# 0.1.2
+# 0.1.3
 
-## What's changed
-* Add iOS xcframework to NuGet package
+## What's fixed
+* Resolved a packaging issue where `Emarsys.Binding.Internal.dll` was missing
