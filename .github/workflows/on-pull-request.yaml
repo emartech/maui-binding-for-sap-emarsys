@@ -1,0 +1,22 @@
+name: Build Sample Apps
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  build-nuget-package:
+    name: Build NuGet Package
+    uses: ./.github/workflows/build-nuget-package.yaml
+    secrets: inherit
+
+  build-sample-apps:
+    name: Build Sample Apps
+    needs: build-nuget-package
+    uses: ./.github/workflows/build-sample-apps.yaml
+    secrets: inherit
+    with:
+      package-version: ${{ needs.build-nuget-package.outputs.version }}

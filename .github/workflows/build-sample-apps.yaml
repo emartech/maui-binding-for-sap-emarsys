@@ -1,0 +1,103 @@
+name: Build Sample Apps
+
+on:
+  workflow_call:
+    inputs:
+      package-version:
+        description: "Version of the NuGet package to test"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      package-version:
+        description: "Version of the NuGet package to test"
+        required: true
+        type: string
+
+jobs:
+  test-sample-apps:
+    name: Build Sample Apps
+    permissions:
+      contents: read
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            sample
+            sample.NotificationService
+            global.json
+          sparse-checkout-cone-mode: false
+
+      - name: Download NuGet Package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install .NET MAUI
+        run: |
+          dotnet workload install maui
+
+          # Install compatible iOS workload version for Xcode 16.4
+          dotnet workload install ios --version 9.0.100
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Import iOS Certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+
+      - name: Setup Sample Apps Package References
+        run: |
+          # Add artifacts folder as a NuGet source
+          dotnet nuget add source $PWD/artifacts --name LocalPackages
+          dotnet nuget list source
+          
+          # Remove local project reference (if any) and add NuGet package reference
+          dotnet remove sample/Sample.csproj reference ../common/Public/Emarsys.Binding.csproj
+          dotnet remove sample.NotificationService/Sample.NotificationService.csproj reference ../common/Public/Emarsys.Binding.csproj
+
+          dotnet add sample/Sample.csproj package Maui.Binding.SAP.Emarsys --version ${{ inputs.package-version }}
+          dotnet add sample.NotificationService/Sample.NotificationService.csproj package Maui.Binding.SAP.Emarsys --version ${{ inputs.package-version }}
+
+      - name: Clean and Restore Sample App
+        run: |
+          dotnet clean sample && dotnet restore sample
+          dotnet clean sample.NotificationService && dotnet restore sample.NotificationService
+
+      - name: Build Android Sample App (from NuGet package)
+        run: |
+          cd sample
+
+          echo '${{ secrets.GOOGLE_SERVICE_JSON }}' > google-services.json
+          dotnet build -f net9.0-android --configuration Release
+
+      - name: Build iOS Sample App (from NuGet package)
+        run: |
+          cd sample
+          # Build for iOS without code signing
+          dotnet build -f net9.0-ios --configuration Release \
+            -p:CodesignKey="" \
+            -p:CodesignProvision="" \
+            -p:CodesignEntitlements="" \
+            -p:RuntimeIdentifier=iossimulator-arm64 \
+            -p:BuildIpa=false \
+            -p:_RequireCodeSigning=false \
+            -p:MtouchUseLlvm=false

@@ -1,17 +1,19 @@
-name: Run MAUI Binding Tests
+name: Run Tests
 
-on: push
+on:
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   test:
     name: Run Tests
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
