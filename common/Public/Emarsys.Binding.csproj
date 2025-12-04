@@ -24,4 +24,29 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
   </ItemGroup>
+
+  <!-- Inject version constant into GlobalUsing.cs at build time -->
+  <Target Name="InjectVersionIntoGlobalUsing" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <VersionFromFile>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../VERSION").Trim())</VersionFromFile>
+      <GlobalUsingPath>$(MSBuildProjectDirectory)/GlobalUsing.cs</GlobalUsingPath>
+      <GlobalUsingContent>$([System.IO.File]::ReadAllText("$(GlobalUsingPath)"))</GlobalUsingContent>
+      <!-- Replace the version placeholder with actual version from VERSION file -->
+      <UpdatedGlobalUsingContent>$(GlobalUsingContent.Replace("##VERSION##", "$(VersionFromFile)"))</UpdatedGlobalUsingContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(GlobalUsingPath)" Lines="$(UpdatedGlobalUsingContent)" Overwrite="true" Condition="$(GlobalUsingContent.Contains('##VERSION##'))" />
+  </Target>
+
+  <!-- Target to inject version and release notes into .nuspec before pack -->
+  <Target Name="InjectReleaseNotes" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <VersionContent>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../VERSION").Trim())</VersionContent>
+      <ChangelogContent>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../CHANGELOG.md"))</ChangelogContent>
+      <NuspecPath>$(MSBuildProjectDirectory)/Emarsys.Binding.nuspec</NuspecPath>
+      <NuspecContent>$([System.IO.File]::ReadAllText("$(NuspecPath)"))</NuspecContent>
+      <!-- Replace $version$ and $releaseNotes$ tokens with actual content -->
+      <UpdatedNuspecContent>$(NuspecContent.Replace("$version$", "$(VersionContent)").Replace("$releaseNotes$", "$(ChangelogContent)"))</UpdatedNuspecContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(NuspecPath)" Lines="$(UpdatedNuspecContent)" Overwrite="true" />
+  </Target>
 </Project>

@@ -20,8 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # File paths (relative to project root)
-GLOBAL_USING_PATH="$PROJECT_ROOT/common/Public/GlobalUsing.cs"
-MAIN_CSPROJ_PATH="$PROJECT_ROOT/common/Public/Emarsys.Binding.nuspec"
+VERSION_FILE_PATH="$PROJECT_ROOT/VERSION"
 ANDROID_GRADLE_PATH="$PROJECT_ROOT/android/native/emarsys/build.gradle.kts"
 ANDROID_BINDING_INTERNAL_PATH="$PROJECT_ROOT/common/Internal/Emarsys.Binding.Internal.csproj"
 IOS_PACKAGE_RESOLVED_PATH="$PROJECT_ROOT/ios/native/MauiEmarsys.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
@@ -32,14 +31,12 @@ CHANGELOG_PATH="$PROJECT_ROOT/CHANGELOG.md"
 get_current_versions() {
     echo -e "${CYAN}📋 Current Versions:${NC}"
     
-    # Get current package version
-    if [ -f "$GLOBAL_USING_PATH" ]; then
-        CURRENT_PACKAGE=$(grep -o 'packageVersion = "[^"]*"' "$GLOBAL_USING_PATH" | sed 's/packageVersion = "\(.*\)"/\1/')
-    fi
-    
-    # Fallback to reading from main .csproj if GlobalUsing.cs doesn't have it
-    if [ -z "$CURRENT_PACKAGE" ] && [ -f "$MAIN_CSPROJ_PATH" ]; then
-        CURRENT_PACKAGE=$(grep -o '<version>[^<]*</version>' "$MAIN_CSPROJ_PATH" | sed 's/<version>\(.*\)<\/version>/\1/')
+    # Get current package version from VERSION file
+    if [ -f "$VERSION_FILE_PATH" ]; then
+        CURRENT_PACKAGE=$(cat "$VERSION_FILE_PATH" | tr -d '\n\r' | xargs)
+    else
+        echo -e "${RED}❌ Error: VERSION file not found at $VERSION_FILE_PATH${NC}"
+        exit 1
     fi
     
     echo -e "${WHITE}   Package: ${YELLOW}$CURRENT_PACKAGE${NC}"
@@ -654,22 +651,12 @@ echo -e "${GREEN}🔄 Applying updates...${NC}"
 # Apply updates
 UPDATE_SUCCESS=true
 
-# Update GlobalUsing.cs - Package version
+# Update VERSION file - Package version
 if [ "$CURRENT_PACKAGE" != "$NEW_PACKAGE_VERSION" ]; then
-    echo -ne "${WHITE}   📝 Updating GlobalUsing.cs... ${NC}"
-    if sed -i "" "s/public static string packageVersion = \"[^\"]*\";/public static string packageVersion = \"$NEW_PACKAGE_VERSION\";/" "$GLOBAL_USING_PATH" 2>/dev/null; then
+    echo -ne "${WHITE}   📝 Updating VERSION file... ${NC}"
+    if echo "$NEW_PACKAGE_VERSION" > "$VERSION_FILE_PATH" 2>/dev/null; then
         echo -e "${GREEN}✓${NC}"
-    else
-        echo -e "${RED}✗${NC}"
-        UPDATE_SUCCESS=false
-    fi
-fi
-
-# Update Emarsys.Binding.csproj - Package version
-if [ "$CURRENT_PACKAGE" != "$NEW_PACKAGE_VERSION" ]; then
-    echo -ne "${WHITE}   📝 Updating Emarsys.Binding.nuspec... ${NC}"
-    if sed -i "" "s/<version>[^<]*<\/version>/<version>$NEW_PACKAGE_VERSION<\/version>/" "$MAIN_CSPROJ_PATH" 2>/dev/null; then
-        echo -e "${GREEN}✓${NC}"
+        echo -e "${WHITE}      (Version will be automatically injected into GlobalUsing.cs and .nuspec at build time)${NC}"
     else
         echo -e "${RED}✗${NC}"
         UPDATE_SUCCESS=false

@@ -2,10 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Maui.Binding.SAP.Emarsys</id>
-    <version>0.1.3</version>
+    <version>$version$</version>
     <authors>Emarsys</authors>
     <description>MAUI Binding for SAP Emarsys.</description>
     <repository type="git" url="https://github.com/emartech/maui-binding-for-sap-emarsys" branch="main" />
+    <releaseNotes>$releaseNotes$</releaseNotes>
     <tags>MAUI Emarsys SDK</tags>
     <dependencies>
       <group>
