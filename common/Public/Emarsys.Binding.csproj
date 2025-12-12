@@ -24,4 +24,16 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
   </ItemGroup>
+
+  <!-- Target to inject release notes into .nuspec before pack -->
+  <Target Name="InjectReleaseNotes" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <ChangelogContent>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../CHANGELOG.md"))</ChangelogContent>
+      <NuspecPath>$(MSBuildProjectDirectory)/Emarsys.Binding.nuspec</NuspecPath>
+      <NuspecContent>$([System.IO.File]::ReadAllText("$(NuspecPath)"))</NuspecContent>
+      <!-- Replace $releaseNotes$ token with actual content -->
+      <UpdatedNuspecContent>$(NuspecContent.Replace("$releaseNotes$", "$(ChangelogContent)"))</UpdatedNuspecContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(NuspecPath)" Lines="$(UpdatedNuspecContent)" Overwrite="true" />
+  </Target>
 </Project>

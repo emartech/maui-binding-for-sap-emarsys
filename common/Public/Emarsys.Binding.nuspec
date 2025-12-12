@@ -6,6 +6,7 @@
     <authors>Emarsys</authors>
     <description>MAUI Binding for SAP Emarsys.</description>
     <repository type="git" url="https://github.com/emartech/maui-binding-for-sap-emarsys" branch="main" />
+    <releaseNotes>$releaseNotes$</releaseNotes>
     <tags>MAUI Emarsys SDK</tags>
     <dependencies>
       <group>
