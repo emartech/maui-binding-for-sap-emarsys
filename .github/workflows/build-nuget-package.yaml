@@ -46,17 +46,13 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Setup .NET 9
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Install .NET MAUI
-        run: |
-          dotnet workload install maui
-
-          # Install compatible iOS workload version for Xcode 16.4
-          dotnet workload install ios --version 9.0.100
+        run: dotnet workload install maui
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
