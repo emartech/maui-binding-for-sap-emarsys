@@ -1,4 +1,4 @@
-# 0.1.3
+# 0.2.0
 
-## What's fixed
-* Resolved a packaging issue where `Emarsys.Binding.Internal.dll` was missing
+## What's changed
+* Upgraded all projects to .NET 10
