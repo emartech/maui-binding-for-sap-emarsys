@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Tests
+  test-dotnet:
+    name: Run .NET Tests
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -23,5 +23,27 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore test/
 
-      - name: Run Tests
+      - name: Run .NET Tests
         run: dotnet test test/
+
+  test-ios:
+    name: Run iOS Native Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: List Available Simulators
+        run: xcrun simctl list devices available
+
+      - name: Run iOS Tests
+        run: |
+          cd ios/native
+          xcodebuild test \
+            -project MauiEmarsys.xcodeproj \
+            -scheme MauiEmarsysTests \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.2'
+
