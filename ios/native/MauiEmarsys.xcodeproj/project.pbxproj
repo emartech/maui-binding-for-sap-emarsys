@@ -16,6 +16,7 @@
 		84F291712D1527950082AC9D /* DotnetEmarsysGeofence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F291702D1527950082AC9D /* DotnetEmarsysGeofence.swift */; };
 		84F291732D2785F80082AC9D /* DotnetEmarsysPredict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F291722D2785F80082AC9D /* DotnetEmarsysPredict.swift */; };
 		C80E29FD2F3B6C0B00066FC5 /* MauiEmarsys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E34F532C21CB2B008AA950 /* MauiEmarsys.framework */; platformFilter = ios; };
+		C8123AA12F3B75F300DC46A9 /* MessageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8123AA02F3B75EB00DC46A9 /* MessageMapper.swift */; };
 		C824337F2CD36AE900D2EDCD /* EmarsysNotificationExtensionLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = C824337E2CD36AE900D2EDCD /* EmarsysNotificationExtensionLibrary */; };
 		C82433812CD36AEC00D2EDCD /* EmarsysSDKLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = C82433802CD36AEC00D2EDCD /* EmarsysSDKLibrary */; };
 		C8BA12F32D1ED01600AD9793 /* DotnetEmarsysInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BA12F22D1ED01600AD9793 /* DotnetEmarsysInbox.swift */; };
@@ -42,6 +43,7 @@
 		84F291702D1527950082AC9D /* DotnetEmarsysGeofence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotnetEmarsysGeofence.swift; sourceTree = "<group>"; };
 		84F291722D2785F80082AC9D /* DotnetEmarsysPredict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotnetEmarsysPredict.swift; sourceTree = "<group>"; };
 		C80E29F92F3B6C0B00066FC5 /* MauiEmarsysTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MauiEmarsysTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8123AA02F3B75EB00DC46A9 /* MessageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMapper.swift; sourceTree = "<group>"; };
 		C8BA12F22D1ED01600AD9793 /* DotnetEmarsysInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotnetEmarsysInbox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +94,7 @@
 		83E34F552C21CB2B008AA950 /* MauiEmarsys */ = {
 			isa = PBXGroup;
 			children = (
+				C8123A9F2F3B75BF00DC46A9 /* Mapper */,
 				83E34F562C21CB2B008AA950 /* MauiEmarsys.h */,
 				83E34F5D2C21CC53008AA950 /* DotnetEmarsys.swift */,
 				84C9A5092D02DE7D0021FF59 /* DotnetEmarsysConfig.swift */,
@@ -103,6 +106,14 @@
 				84494A3E2CE20956007C8007 /* DotnetEmarsysTypes.swift */,
 			);
 			path = MauiEmarsys;
+			sourceTree = "<group>";
+		};
+		C8123A9F2F3B75BF00DC46A9 /* Mapper */ = {
+			isa = PBXGroup;
+			children = (
+				C8123AA02F3B75EB00DC46A9 /* MessageMapper.swift */,
+			);
+			path = Mapper;
 			sourceTree = "<group>";
 		};
 		C824337D2CD36AE900D2EDCD /* Frameworks */ = {
@@ -237,6 +248,7 @@
 				84494A3D2CE20914007C8007 /* DotnetEmarsysPush.swift in Sources */,
 				83E34F5E2C21CC53008AA950 /* DotnetEmarsys.swift in Sources */,
 				84F291712D1527950082AC9D /* DotnetEmarsysGeofence.swift in Sources */,
+				C8123AA12F3B75F300DC46A9 /* MessageMapper.swift in Sources */,
 				84494A3F2CE20956007C8007 /* DotnetEmarsysTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
