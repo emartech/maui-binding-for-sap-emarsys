@@ -30,6 +30,14 @@ configurations {
     create("copyDependencies")
 }
 
+tasks.withType<Test> {
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
+}
+
 dependencies {
     // Add package dependency for binding library
     implementation("com.emarsys:emarsys-sdk:3.10.2")
@@ -38,6 +46,11 @@ dependencies {
     // Copy dependencies for binding library
     "copyDependencies"("com.emarsys:emarsys-sdk:3.10.2")
     "copyDependencies"("com.emarsys:emarsys-firebase:3.10.2")
+
+    // Test dependencies
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.robolectric:robolectric:4.11.1")
 }
 
 // Copy dependencies for binding library

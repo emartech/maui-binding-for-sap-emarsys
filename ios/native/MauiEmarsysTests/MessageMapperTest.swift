@@ -6,7 +6,7 @@ import XCTest
 import EmarsysSDK
 @testable import MauiEmarsys
 
-class MessageMapperTests: XCTestCase {
+class MessageMapperTest: XCTestCase {
     
     func testMapMessages_withCompleteMessage() {
         let appEventAction = EMSAppEventActionModel(

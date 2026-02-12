@@ -18,7 +18,7 @@ public class DotnetEmarsysInbox {
                 resultCallback.onResult(null, result.getErrorCause());
             } else {
                 if (result.getResult() != null) {
-                    List<Map<String, Object>> mappedMessages = MessageMapper.mapMessages(result.getResult().getMessages());
+                    List<Map<String, Object>> mappedMessages = MessageMapper.map(result.getResult().getMessages());
                     resultCallback.onResult(mappedMessages, null);
                 } else {
                     resultCallback.onResult(List.of(), null);

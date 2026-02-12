@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import com.emarsys.Emarsys;
 import com.emarsys.core.api.result.ResultListener;
 import com.emarsys.core.api.result.Try;
-import com.emarsys.maui.mapper.PredictMapper;
+import com.emarsys.maui.mapper.CartItemMapper;
+import com.emarsys.maui.mapper.FilterMapper;
+import com.emarsys.maui.mapper.LogicMapper;
+import com.emarsys.maui.mapper.ProductMapper;
 import com.emarsys.maui.model.EMSCartItem;
 import com.emarsys.maui.model.EMSLogic;
 import com.emarsys.maui.model.EMSProduct;
@@ -22,11 +25,11 @@ public class DotnetEmarsysPredict {
     }
 
     public static void trackCart(@NonNull List<EMSCartItem> items) {
-        Emarsys.getPredict().trackCart(PredictMapper.mapCartItems(items));
+        Emarsys.getPredict().trackCart(CartItemMapper.map(items));
     }
 
     public static void trackPurchase(@NonNull String orderId, @NonNull List<EMSCartItem> items) {
-        Emarsys.getPredict().trackPurchase(orderId, PredictMapper.mapCartItems(items));
+        Emarsys.getPredict().trackPurchase(orderId, CartItemMapper.map(items));
     }
 
     public static void trackItemView(@NonNull String itemId) {
@@ -60,9 +63,9 @@ public class DotnetEmarsysPredict {
 
     public static void recommendProducts(@NonNull EMSLogic logic, List<EMSRecommendationFilter> filters, Integer limit, String availabilityZone,
                                          @NonNull RecommendProductsCompletionListener completionListener) {
-        Logic _logic = PredictMapper.mapLogic(logic);
-        List<RecommendationFilter> _filters = PredictMapper.mapFilters(filters);
-        ResultListener<Try<List<Product>>> resultListener = (result) -> completionListener.onCompleted(PredictMapper.mapProducts(result.getResult()), result.getErrorCause());
+        Logic _logic = LogicMapper.map(logic);
+        List<RecommendationFilter> _filters = FilterMapper.map(filters);
+        ResultListener<Try<List<Product>>> resultListener = (result) -> completionListener.onCompleted(ProductMapper.map(result.getResult()), result.getErrorCause());
 
         if (_filters != null && limit != null && availabilityZone != null) {
             Emarsys.getPredict().recommendProducts(_logic, _filters, limit, availabilityZone, resultListener);

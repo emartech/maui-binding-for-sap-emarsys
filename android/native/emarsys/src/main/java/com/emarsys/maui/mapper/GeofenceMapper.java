@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GeofenceMapper {
 
-    public static @NonNull List<EMSGeofence> mapGeofences(@NonNull List<Geofence> geofences) {
+    public static @NonNull List<EMSGeofence> map(@NonNull List<Geofence> geofences) {
         List<EMSGeofence> _geofences = new ArrayList<>();
         for (int i = 0; i < geofences.size(); i++) {
             Geofence g = geofences.get(i);

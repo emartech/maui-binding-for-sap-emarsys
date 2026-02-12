@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class MessageMapper {
 
-    public static @NonNull List<Map<String, Object>> mapMessages(@NonNull List<Message> messages) {
+    public static @NonNull List<Map<String, Object>> map(@NonNull List<Message> messages) {
         return messages.stream().map(message -> {
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("id", message.getId());

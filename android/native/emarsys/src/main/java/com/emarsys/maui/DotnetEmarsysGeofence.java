@@ -34,7 +34,7 @@ public class DotnetEmarsysGeofence {
 
     public static @NonNull List<EMSGeofence> getRegisteredGeofences() {
         List<Geofence> geofences = Emarsys.getGeofence().getRegisteredGeofences();
-        return GeofenceMapper.mapGeofences(geofences);
+        return GeofenceMapper.map(geofences);
     }
 
 }
