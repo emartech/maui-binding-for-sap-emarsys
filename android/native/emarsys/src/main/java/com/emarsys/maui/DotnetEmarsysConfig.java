@@ -3,6 +3,7 @@ package com.emarsys.maui;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import com.emarsys.Emarsys;
+import com.emarsys.maui.model.EMSConfig;
 import java.util.List;
 
 public class DotnetEmarsysConfig {

@@ -1,4 +1,6 @@
 ﻿<metadata>
     <!-- Make sure the package id and name reflects the new binding name -->
     <attr path="/api/package[@name='com.emarsys.maui']" name="managedName">EmarsysAndroid</attr>
+    <attr path="/api/package[@name='com.emarsys.maui.model']" name="managedName">EmarsysAndroid.Model</attr>
+    <attr path="/api/package[@name='com.emarsys.maui.mapper']" name="managedName">EmarsysAndroid.Mapper</attr>
 </metadata>
