@@ -1,4 +1,4 @@
-package com.emarsys.maui;
+package com.emarsys.maui.model;
 
 import androidx.annotation.NonNull;
 import java.util.List;

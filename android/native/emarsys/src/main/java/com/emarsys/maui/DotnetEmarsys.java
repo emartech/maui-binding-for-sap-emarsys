@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.emarsys.Emarsys;
 import com.emarsys.config.EmarsysConfig;
+import com.emarsys.maui.model.EMSConfig;
 import java.util.Map;
 
 public class DotnetEmarsys {

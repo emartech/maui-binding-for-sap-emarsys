@@ -1,5 +1,6 @@
 ﻿#if ANDROID
 global using EmarsysAndroid;
+global using EmarsysAndroid.Model;
 global using EventHandlerAction = System.Action<Android.Content.Context, string, Org.Json.JSONObject?>;
 global using OnCompletedAction = System.Action<System.Exception?>;
 global using ErrorType = System.Exception;
