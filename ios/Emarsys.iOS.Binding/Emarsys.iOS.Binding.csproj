@@ -19,7 +19,7 @@
 
   <!-- Reference to Xcode project -->
   <ItemGroup>
-    <NLIXcodeProjectReference Include="../native/MauiEmarsys.xcodeproj">
+    <XcodeProject Include="../native/MauiEmarsys.xcodeproj">
       <SchemeName>MauiEmarsys</SchemeName>
       <SharpieNamespace>EmarsysiOS</SharpieNamespace>
       <!-- Disable Sharpie for now.
@@ -31,7 +31,7 @@
       <Kind>Framework</Kind>
       <SmartLink>true</SmartLink>
       -->
-    </NLIXcodeProjectReference>
+    </XcodeProject>
   </ItemGroup>
 
   <!-- Include the native framework for NuGet packaging -->
@@ -39,6 +39,9 @@
     <NativeReference Include="../native/MauiEmarsysiOS.xcframework">
       <Kind>Framework</Kind>
       <SmartLink>true</SmartLink>
+      <Frameworks>MauiEmarsys</Frameworks>
+      <ForceLoad>false</ForceLoad>
+      <Visible>false</Visible>
     </NativeReference>
   </ItemGroup>
 
