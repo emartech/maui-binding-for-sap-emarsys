@@ -19,7 +19,7 @@ jobs:
     name: Build Sample Apps
     permissions:
       contents: read
-    runs-on: macos-latest
+    runs-on: macos-26
     
     steps:
       - name: Checkout Repository
@@ -43,17 +43,17 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Setup .NET
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_26.2.app
+
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Install .NET MAUI
         run: |
           dotnet workload install maui
-
-          # Install compatible iOS workload version for Xcode 16.4
-          dotnet workload install ios --version 9.0.100
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -87,13 +87,13 @@ jobs:
           cd sample
 
           echo '${{ secrets.GOOGLE_SERVICE_JSON }}' > google-services.json
-          dotnet build -f net9.0-android --configuration Release
+          dotnet build -f net10.0-android --configuration Release
 
       - name: Build iOS Sample App (from NuGet package)
         run: |
           cd sample
           # Build for iOS without code signing
-          dotnet build -f net9.0-ios --configuration Release \
+          dotnet build -f net10.0-ios --configuration Release \
             -p:CodesignKey="" \
             -p:CodesignProvision="" \
             -p:CodesignEntitlements="" \
