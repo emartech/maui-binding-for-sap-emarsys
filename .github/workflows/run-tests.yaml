@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+        run: sudo xcode-select -switch /Applications/Xcode_26.6.app
 
       - name: Run iOS Tests
         run: |

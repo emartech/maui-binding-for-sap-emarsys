@@ -25,7 +25,7 @@
   <!-- Reference the Android binding dependencies -->
   <PropertyGroup Condition="$(TargetFramework.Contains('android'))">
     <DependenciesPath>..\..\android\native\emarsys\bin\Release\net9.0-android\outputs\deps</DependenciesPath>
-    <EmarsysSDKVersion>3.10.2</EmarsysSDKVersion>
+    <EmarsysSDKVersion>3.11.2</EmarsysSDKVersion>
   </PropertyGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('android'))">
     <AndroidLibrary Include="$(DependenciesPath)\common-$(EmarsysSDKVersion).aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>
@@ -40,7 +40,7 @@
     <AndroidLibrary Include="$(DependenciesPath)\predict-api-$(EmarsysSDKVersion).aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>
 
     <AndroidLibrary Include="$(DependenciesPath)\espresso-idling-resource-3.7.0.aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>
-    <AndroidLibrary Include="$(DependenciesPath)\play-services-location-21.3.0.aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>
+    <AndroidLibrary Include="$(DependenciesPath)\play-services-location-21.4.0.aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>
   </ItemGroup>
 
   <ItemGroup>

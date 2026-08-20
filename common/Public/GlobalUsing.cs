@@ -16,7 +16,7 @@ global using System.Runtime.Versioning;
 
 public static class Global
 {
-    public static string packageVersion = "0.1.3";
+    public static string packageVersion = "0.1.4";
     public static string frameworkVersion = GetFrameworkVersion();
 
     private static string GetFrameworkVersion()

@@ -1,15 +1,15 @@
 {
-  "originHash" : "4085f5467a3acaaf6baf769c1d94bdfe53c98e0ac321c0710dad06529cca0a6f",
-  "pins" : [
+  "originHash": "4085f5467a3acaaf6baf769c1d94bdfe53c98e0ac321c0710dad06529cca0a6f",
+  "pins": [
     {
-      "identity" : "ios-emarsys-sdk",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/emartech/ios-emarsys-sdk.git",
-      "state" : {
-        "revision" : "4808149e6ea0e0be3f6d01e0022b06c8c759c280",
-        "version" : "3.9.0"
+      "identity": "ios-emarsys-sdk",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/emartech/ios-emarsys-sdk.git",
+      "state": {
+        "revision": "a9932228e05569feb919f7e8ed0e2b8490728a93",
+        "version": "3.10.2"
       }
     }
   ],
-  "version" : 3
+  "version": 3
 }

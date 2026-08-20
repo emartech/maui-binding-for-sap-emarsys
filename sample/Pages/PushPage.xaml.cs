@@ -1,6 +1,9 @@
 ﻿namespace Sample;
 
 using Microsoft.Maui.ApplicationModel;
+#if ANDROID
+using Android.Gms.Extensions;
+#endif
 
 using EmarsysBinding;
 
@@ -15,7 +18,7 @@ public partial class PushPage : ContentPage
 	private async void OnSetPushTokenClicked(object sender, EventArgs e)
 	{
 		#if ANDROID
-		var pushToken = Firebase.Messaging.FirebaseMessaging.Instance.GetToken().Result.ToString();
+		var pushToken = (await Firebase.Messaging.FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.String>()).ToString();
 		var error = await Emarsys.Push.SetPushToken(pushToken);
 		Utils.LogResult("SetPushToken", error);
 		#elif IOS
