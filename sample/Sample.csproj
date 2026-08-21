@@ -55,11 +55,15 @@
 
 	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
 		<GoogleServicesJson Include="google-services.json" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.8.6.1" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.1" />
-		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.7.3" />
-		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx" Version="2.8.7.3" />
-		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.7.3" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.8.9" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.9" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime.Ktx" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.9.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.9.2.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('ios'))">

@@ -1,4 +1,4 @@
-# 0.1.3
-
-## What's fixed
-* Resolved a packaging issue where `Emarsys.Binding.Internal.dll` was missing
+# 0.1.4
+## What's changed
+* Updated underlying [Android Emarsys SDK](https://github.com/emartech/android-emarsys-sdk/releases/tag/3.11.2) to 3.11.2
+* Updated underlying [iOS Emarsys SDK](https://github.com/emartech/ios-emarsys-sdk/releases/tag/3.10.2) to 3.10.2

@@ -40,12 +40,12 @@ tasks.withType<Test> {
 
 dependencies {
     // Add package dependency for binding library
-    implementation("com.emarsys:emarsys-sdk:3.10.2")
-    implementation("com.emarsys:emarsys-firebase:3.10.2")
+    implementation("com.emarsys:emarsys-sdk:3.11.2")
+    implementation("com.emarsys:emarsys-firebase:3.11.2")
 
     // Copy dependencies for binding library
-    "copyDependencies"("com.emarsys:emarsys-sdk:3.10.2")
-    "copyDependencies"("com.emarsys:emarsys-firebase:3.10.2")
+    "copyDependencies"("com.emarsys:emarsys-sdk:3.11.2")
+    "copyDependencies"("com.emarsys:emarsys-firebase:3.11.2")
 
     // Test dependencies
     testImplementation("junit:junit:4.13.2")
