@@ -312,10 +312,14 @@ update_changelog() {
     local new_ios="$6"
     
     local changelog_entry=$(generate_changelog_entry "$new_package_version" "$current_package" "$current_android" "$new_android" "$current_ios" "$new_ios")
-    
-    # Always replace the entire changelog with just the new entry
-    # This removes all previous versions and keeps only the current one
-    echo -e "$changelog_entry" > "$CHANGELOG_PATH"
+
+    # Prepend the new entry, preserving the full history of previous releases
+    local tmp_path="${CHANGELOG_PATH}.tmp"
+    echo -e "$changelog_entry" > "$tmp_path"
+    if [ -f "$CHANGELOG_PATH" ] && [ -s "$CHANGELOG_PATH" ]; then
+        cat "$CHANGELOG_PATH" >> "$tmp_path"
+    fi
+    mv "$tmp_path" "$CHANGELOG_PATH"
 }
 
 # Function to prompt for changelog update
