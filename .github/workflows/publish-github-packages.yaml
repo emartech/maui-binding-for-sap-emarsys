@@ -28,4 +28,9 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push to GitHub Packages
-        run: dotnet nuget push ./artifacts/*.nupkg --skip-duplicate
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key "${{ secrets.GITHUB_TOKEN }}" \
+            --source https://nuget.pkg.github.com/emartech/index.json \
+            --skip-duplicate \
+            --timeout 120
