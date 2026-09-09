@@ -4,9 +4,32 @@ on:
   workflow_call:
 
 jobs:
-  create-release:
+  validate:
+    name: Run Tests
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit
+
+  build:
+    name: Build NuGet Package
+    needs: validate
+    uses: ./.github/workflows/build-nuget-package.yaml
+    secrets: inherit
+
+  verify-samples:
+    name: Build Sample Apps
+    needs: build
+    uses: ./.github/workflows/build-sample-apps.yaml
+    secrets: inherit
+    with:
+      package-version: ${{ needs.build.outputs.version }}
+
+  tag-and-draft:
+    name: Tag and Create Release Draft
+    needs: [validate, build, verify-samples]
     runs-on: macos-latest
-    
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -22,7 +45,7 @@ jobs:
           VERSION=$(grep -E "^# [0-9]+\.[0-9]+\.[0-9]+" CHANGELOG.md | head -1 | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Found version: $VERSION"
-          
+
           # Extract changelog content for this version (without the version header)
           # Find the line with the version header and get content until next version or end of file
           awk "/^# $VERSION/{flag=1; next} /^# [0-9]/{flag=0} flag" CHANGELOG.md > changelog_body.md
@@ -30,25 +53,30 @@ jobs:
 
     - name: Check if tag exists
       id: check-tag
+      env:
+        VERSION: ${{ steps.get-version.outputs.version }}
       run: |
-        if git rev-parse "${{ steps.get-version.outputs.version }}" >/dev/null 2>&1; then
+        if git rev-parse "$VERSION" >/dev/null 2>&1; then
           echo "tag-exists=true" >> $GITHUB_OUTPUT
-          echo "Tag ${{ steps.get-version.outputs.version }} already exists"
+          echo "Tag $VERSION already exists"
         else
           echo "tag-exists=false" >> $GITHUB_OUTPUT
-          echo "Tag ${{ steps.get-version.outputs.version }} does not exist"
+          echo "Tag $VERSION does not exist"
         fi
 
     - name: Create Git Tag
       id: create-tag
+      env:
+        VERSION: ${{ steps.get-version.outputs.version }}
+        TAG_EXISTS: ${{ steps.check-tag.outputs.tag-exists }}
       run: |
-        if [ "${{ steps.check-tag.outputs.tag-exists }}" == "false" ]; then
+        if [ "$TAG_EXISTS" == "false" ]; then
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a "${{ steps.get-version.outputs.version }}" -m "Release version ${{ steps.get-version.outputs.version }}"
-          git push origin "${{ steps.get-version.outputs.version }}"
+          git tag -a "$VERSION" -m "Release version $VERSION"
+          git push origin "$VERSION"
           echo "tag-created=true" >> $GITHUB_OUTPUT
-          echo "Created new tag ${{ steps.get-version.outputs.version }}"
+          echo "Created new tag $VERSION"
         else
           echo "tag-created=false" >> $GITHUB_OUTPUT
           echo "Tag already exists, skipping creation"
