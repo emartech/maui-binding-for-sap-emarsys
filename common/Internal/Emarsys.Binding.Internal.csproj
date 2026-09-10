@@ -25,7 +25,7 @@
   <!-- Reference the Android binding dependencies -->
   <PropertyGroup Condition="$(TargetFramework.Contains('android'))">
     <DependenciesPath>..\..\android\native\emarsys\bin\Release\net9.0-android\outputs\deps</DependenciesPath>
-    <EmarsysSDKVersion>3.11.2</EmarsysSDKVersion>
+    <EmarsysSDKVersion>3.11.3</EmarsysSDKVersion>
   </PropertyGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('android'))">
     <AndroidLibrary Include="$(DependenciesPath)\common-$(EmarsysSDKVersion).aar"><Bind>false</Bind><Visible>false</Visible></AndroidLibrary>

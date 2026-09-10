@@ -8,6 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
+  run-tests:
+    name: Run Tests
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit
+
   build-nuget-package:
     name: Build NuGet Package
     uses: ./.github/workflows/build-nuget-package.yaml
