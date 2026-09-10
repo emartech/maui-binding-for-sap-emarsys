@@ -19,6 +19,7 @@ jobs:
 
   build-nuget-package:
     name: Build NuGet Package
+    needs: [check-versions, run-tests]
     uses: ./.github/workflows/build-nuget-package.yaml
     secrets: inherit
 
