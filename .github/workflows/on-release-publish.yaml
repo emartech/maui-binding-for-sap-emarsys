@@ -1,4 +1,4 @@
-name: Publish Package
+name: On Release
 permissions:
   contents: read
   packages: write

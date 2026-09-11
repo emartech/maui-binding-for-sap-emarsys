@@ -1,4 +1,4 @@
-name: Build Sample Apps
+name: On Pull Request
 permissions:
   contents: read
 
