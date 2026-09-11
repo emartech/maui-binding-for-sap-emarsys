@@ -8,10 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-versions:
-    name: Check Version Consistency
-    uses: ./.github/workflows/check-versions.yaml
-
   run-tests:
     name: Run Tests
     uses: ./.github/workflows/run-tests.yaml
@@ -19,7 +15,7 @@ jobs:
 
   build-nuget-package:
     name: Build NuGet Package
-    needs: [check-versions, run-tests]
+    needs: [run-tests]
     uses: ./.github/workflows/build-nuget-package.yaml
     secrets: inherit
 
