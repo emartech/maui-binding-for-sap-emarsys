@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Import iOS Certificate
-        uses: apple-actions/import-codesign-certs@v3
+        uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
           p12-password: ${{ secrets.IOS_P12_PASSWORD }}
@@ -41,7 +41,7 @@ jobs:
             -output MauiEmarsysiOS.xcframework
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: 17
           distribution: temurin
@@ -55,11 +55,8 @@ jobs:
         run: |
           dotnet workload install maui
 
-          # Install compatible iOS workload version for Xcode 16.4
-          dotnet workload install ios --version 9.0.100
-
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Clean and Restore Dependencies
         run: | 
@@ -79,7 +76,7 @@ jobs:
           echo "Extracted version: $VERSION"
 
       - name: Upload NuGet Package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-package
           path: artifacts/*.nupkg
