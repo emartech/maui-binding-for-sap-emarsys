@@ -10,14 +10,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Integraion Tests
+  run-tests:
+    name: Run Tests
     uses: ./.github/workflows/run-tests.yaml
     secrets: inherit
 
   build-nuget-package:
     name: Build NuGet Package
-    needs: test
+    needs: run-tests
     uses: ./.github/workflows/build-nuget-package.yaml
     secrets: inherit
 

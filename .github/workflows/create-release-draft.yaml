@@ -4,29 +4,29 @@ on:
   workflow_call:
 
 jobs:
-  validate:
+  run-tests:
     name: Run Tests
     uses: ./.github/workflows/run-tests.yaml
     secrets: inherit
 
-  build:
+  build-package:
     name: Build NuGet Package
-    needs: validate
+    needs: run-tests
     uses: ./.github/workflows/build-nuget-package.yaml
     secrets: inherit
 
-  verify-samples:
+  build-samples:
     name: Build Sample Apps
-    needs: build
+    needs: build-package
     uses: ./.github/workflows/build-sample-apps.yaml
     secrets: inherit
     with:
-      package-version: ${{ needs.build.outputs.version }}
+      package-version: ${{ needs.build-package.outputs.version }}
 
   tag-and-draft:
     name: Tag and Create Release Draft
-    needs: [validate, build, verify-samples]
-    runs-on: macos-latest
+    needs: [build-samples]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
@@ -39,7 +39,7 @@ jobs:
     - name: Check version consistency
       run: bash scripts/check-version-consistency.sh
 
-    - name: Get version from changelog
+    - name: Get version and notes from CHANGELOG
       id: get-version
       run: |
           VERSION=$(grep -E "^# [0-9]+\.[0-9]+\.[0-9]+" CHANGELOG.md | head -1 | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
@@ -83,13 +83,13 @@ jobs:
         fi
 
     - name: Create GitHub Release Draft
-      if: steps.create-tag.outputs.tag-created == 'true'
-      uses: actions/create-release@v1
+      if: steps.check-tag.outputs.tag-exists == 'false'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.get-version.outputs.version }}
-        release_name: ${{ steps.get-version.outputs.version }}
-        body_path: changelog_body.md
-        draft: true
-        prerelease: false
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ steps.get-version.outputs.version }}
+      run: |
+        gh release create "$VERSION" \
+          --draft \
+          --title "$VERSION" \
+          --notes-file changelog_body.md
+        echo "Created draft release $VERSION"
