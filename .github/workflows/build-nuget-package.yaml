@@ -21,6 +21,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v7
 
+      - name: Check version consistency
+        run: bash scripts/check-version-consistency.sh
+
       - name: Import iOS Certificate
         uses: apple-actions/import-codesign-certs@v7
         with:
