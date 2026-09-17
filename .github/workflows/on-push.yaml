@@ -5,7 +5,7 @@ permissions:
 on: push
 
 jobs:
-  test:
+  run-tests:
     name: Run Tests
     uses: ./.github/workflows/run-tests.yaml
     secrets: inherit
