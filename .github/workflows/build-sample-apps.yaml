@@ -83,7 +83,7 @@ jobs:
         run: |
           cd sample
 
-          echo '${{ secrets.GOOGLE_SERVICE_JSON }}' > google-services.json
+          echo '${{ vars.GOOGLE_SERVICES_JSON }}' > google-services.json
           dotnet build -f net10.0-android --configuration Release
 
       - name: Build iOS Sample App (from NuGet package)
